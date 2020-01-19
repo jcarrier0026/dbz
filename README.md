@@ -18,10 +18,32 @@ g++ -lSDL2 main.cpp
 ```
 
 ## Development Tips
+
+### Get the latest code
+'develop' is the golden branch. Get the latest develop:
+```bash
+# Check out the develop branch
+git checkout -b develop origin/develop # or just 'git checkout develop' if you already have a
+develop branch
+
+# Check that you're on the right branch
+git status
+
+# Check if anything changed on Github
+git fetch
+
+# Check if there are changes you need to pull down
+git status
+
+# Pull down any changes
+git pull
+```
+
 ### Start a feature branch
 1. Create a feature branch associated with the github issue you're working on.
 ```bash
-git checkout -b feature/#<issue-number>-<name>
+# Start a new feature branch based on develop.
+git checkout -b feature/#<issue-number>-<name> origin/develop
 ```
 
 2. Make changes to complete your feature.
