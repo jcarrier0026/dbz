@@ -8,6 +8,15 @@ constexpr int kWindowWidth = 640;
 constexpr int kWindowHeight = 480;
 constexpr char kGameTitle[] = "DBZ";
 
+// Structure to hold the RGB values of the background color.
+constexpr struct {
+  char red = 0x0;
+  char green = 0x0;
+  char blue = 0xFF;
+  // Opaque is just 255 (0xFF), but let's use the provided SDL constant.
+  char alpha = SDL_ALPHA_OPAQUE;
+} BackgroundColor;
+
 // Function to initialize the SDL library.
 // Returns true if initialization succeeded.
 bool InitSdl() {
@@ -18,15 +27,6 @@ bool InitSdl() {
   }
   return true;
 }
-
-// Structure to hold the RGB values of the background color.
-struct {
-  int red = 0x0;
-  int green = 0x0;
-  int blue = 0xFF;
-  // Opaque is just 255 (0xFF), but let's use the provided SDL constant.
-  int alpha = SDL_ALPHA_OPAQUE;
-} BackgroundColor;
 
 int main(int argc, char** argv) {
   // If SDL can't initialize, exit.
