@@ -1,29 +1,15 @@
 #include "graphics.h"
+
 #include <iostream>
 
-Graphics::Graphics() { CreateWindow(); }
+Graphics::Graphics() {}
 
 Graphics::~Graphics() {
   // Quit SDL gracefully.
   SDL_Quit();
 }
 
-bool Graphics::InitSdl() {
-  if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-    std::cout << "SDL Failed to initialize. Error: " << SDL_GetError()
-              << std::endl;
-    return false;
-  }
-  return true;
-}
-
 void Graphics::CreateWindow() {
-  // If SDL can't initialize, exit.
-  if (!InitSdl()) {
-    window_created_ = false;
-    return;
-  }
-  window_created_ = true;
   // SDL method to create our window.
   SDL_CreateWindowAndRenderer(kWindowWidth, kWindowHeight, 0, &window_,
                               &renderer_);
@@ -38,5 +24,4 @@ void Graphics::CreateWindow() {
 
   // Displays our screen in the window.
   SDL_RenderPresent(renderer_);
-  return;
 }
