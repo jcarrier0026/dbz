@@ -1,7 +1,5 @@
 #include "graphics.h"
 
-#include <iostream>
-
 Graphics::Graphics() {}
 
 Graphics::~Graphics() {

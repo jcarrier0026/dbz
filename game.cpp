@@ -19,7 +19,7 @@ bool Game::Run() {
   // Initialize the game window.
   graphics_.CreateWindow();
 
-  // Event struct to grab input events from SDL
+  // Event struct to grab input events from SDL.
   SDL_Event event;
 
   int last_update_time_ms = SDL_GetTicks();
