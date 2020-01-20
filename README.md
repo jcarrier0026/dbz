@@ -9,7 +9,7 @@ sudo apt-get install libsdl2-dev
 
 ## Compilation Instructions
 ```bash
- g++ main.cpp `sdl2-config --cflags --libs`
+ g++ main.cpp graphics.cpp `sdl2-config --cflags --libs`
 ```
 
 ## Run Instructions
