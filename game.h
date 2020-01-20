@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "graphics.h"
+#include "input.h"
 
 // The top-level class that controls the game loop.
 // This class starts the game and orchestrates it.
@@ -21,6 +22,9 @@ class Game {
 
   // Controls all graphics-related functionality.
   Graphics graphics_;
+
+  // Controls all input-related functionality.
+  Input input_;
 };
 
 #endif /* GAME_H */

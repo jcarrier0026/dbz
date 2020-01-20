@@ -16,8 +16,24 @@ void Graphics::CreateWindow() {
   SDL_SetWindowTitle(window_, kGameTitle);
 
   // Changes background.
-  SDL_SetRenderDrawColor(renderer_, BackgroundColor.red, BackgroundColor.green,
-                         BackgroundColor.blue, BackgroundColor.alpha);
+  SDL_SetRenderDrawColor(renderer_, background_color.red, background_color.green,
+                         background_color.blue, background_color.alpha);
+
+  // Clear the screen, putting our background color in every pixel.
+  SDL_RenderClear(renderer_);
+
+  // Displays our screen in the window.
+  SDL_RenderPresent(renderer_);
+}
+
+
+void Graphics::ChangeWindowColor() {
+ background_color.red += 50;
+ background_color.blue += 50;
+
+ // Changes background.
+  SDL_SetRenderDrawColor(renderer_, background_color.red, background_color.green,
+                         background_color.blue, background_color.alpha);
 
   // Clear the screen, putting our background color in every pixel.
   SDL_RenderClear(renderer_);
