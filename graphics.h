@@ -8,32 +8,26 @@ constexpr int kWindowHeight = 480;
 constexpr char kGameTitle[] = "DBZ";
 
 // Structure to hold the RGB values of the background color.
-constexpr struct {
+struct {
   char red = 0x0;
   char green = 0x0;
   char blue = 0xFF;
   char alpha = 0XFF;
-
-} BackgroundColor;
+} background_color;
 
 class Graphics {
  public:
   Graphics();
   ~Graphics();
+
+  void ChangeWindowColor();
+
   // Attempts to create the game window.
   void CreateWindow();
-  // Call this after contructing a Graphics object to check if initialization
-  // succeeded.
-  bool InitSuccess() { return window_created_; }
 
  private:
-  bool window_created_ = false;
   SDL_Window* window_;
   SDL_Renderer* renderer_;
-
-  // Function to initialize the SDL library.
-  // Returns true if initialization succeeded.
-  bool InitSdl();
 };
 
 #endif  // GRAPHICS_H
