@@ -1,8 +1,11 @@
 #include "game.h"
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include <iostream>
+
+#include "constants.h"
 
 constexpr int kFps = 50;
 constexpr int kMaxFrameTimeMs = 1000 / kFps;
@@ -21,6 +24,9 @@ bool Game::Run() {
 
   // Event struct to grab input events from SDL.
   SDL_Event event;
+
+  // DELETE THIS EVENTUALLY
+  int goku_location = 0;
 
   int last_update_time_ms = SDL_GetTicks();
   // The game loop.
@@ -54,13 +60,28 @@ bool Game::Run() {
       graphics_.ChangeWindowColor();
     }
 
+    if (input_.WasKeyPressed(SDL_SCANCODE_B) ||
+        input_.IsKeyHeld(SDL_SCANCODE_B)) {
+      goku_location += 4;
+    }
+
     // Cap the framerate at 50 FPS.
     const int current_time_ms = SDL_GetTicks();
     int elapsed_time_ms = current_time_ms - last_update_time_ms;
     int frame_time_ms = std::min(elapsed_time_ms, kMaxFrameTimeMs);
-    // TODO: Update the frame here.
-
     last_update_time_ms = current_time_ms;
+
+    Sprite sprite("dbz_character_sprites", {.x = 0, .y = 86, .w = 32, .h = 40});
+
+    SDL_Rect destination = {.x = goku_location % (constants::kWindowWidth - 64),
+                            .y = 30,
+                            .w = 64,
+                            .h = 80};
+
+    graphics_.AddSprite(sprite, destination);
+
+    // TODO: Update the frame here.
+    graphics_.DrawNextFrame();
   }
 }
 
@@ -70,5 +91,6 @@ bool Game::InitSdl() {
               << std::endl;
     return false;
   }
+  IMG_Init(IMG_INIT_PNG);
   return true;
 }

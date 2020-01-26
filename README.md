@@ -5,11 +5,12 @@ Simple dbz game
 ### Install SDL2 Dev Package
 ```bash
 sudo apt-get install libsdl2-dev
+sudo apt-get install libsdl2-image-dev
 ```
 
 ## Compilation Instructions
 ```bash
- g++ main.cpp graphics.cpp game.cpp input.cpp `sdl2-config --cflags --libs`
+make
 ```
 
 ## Run Instructions
