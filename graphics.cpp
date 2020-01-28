@@ -1,11 +1,12 @@
 #include "graphics.h"
 
+#include <iostream>
 #include "constants.h"
 
 // Graphics-related constants.
 constexpr char kGameTitle[] = "DBZ";
 
-Graphics::Graphics() {}
+Graphics::Graphics() : number_of_frames_drawn_(0), last_fps_check_(0) {}
 
 Graphics::~Graphics() {
   // Destroy the window.
@@ -51,8 +52,15 @@ void Graphics::ChangeWindowColor() {
 
 void Graphics::DrawNextFrame() {
   // Draw the next frame to the screen.
+  if (number_of_frames_drawn_ % 100 == 0 && number_of_frames_drawn_ > 0) {
+    int current_time = SDL_GetTicks();
+    int elapsed_time = current_time - last_fps_check_;
+    float fps = 100.0 / (elapsed_time / 1000.0);
+    std::cout << "FPS: " << fps << std::endl;
+    last_fps_check_ = SDL_GetTicks();
+  }
+  number_of_frames_drawn_++;
   SDL_RenderPresent(renderer_);
-
   SDL_RenderClear(renderer_);
 }
 

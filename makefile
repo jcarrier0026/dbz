@@ -1,6 +1,6 @@
 # Some useful variables
 OBJS = graphics.o input.o main.o sprite.o game.o
-CFLAGS = -Wall -g
+CFLAGS = -Wall -g -O3
 LIBS = `sdl2-config --cflags --libs` -lSDL2_image
 CC = g++
 
@@ -12,7 +12,7 @@ all: dbz.out
 # This is the dbz.out target. It will make the file 'dbz.out'
 # using the provided command.
 dbz.out: ${OBJS}
-	${CC} ${CFLAGS} ${LIBS} ${OBJS} -o $@
+	${CC} ${CFLAGS} ${OBJS} ${LIBS} -o $@
 
 # Special rule for making .o files out of .cpp files.
 .cpp.o:
