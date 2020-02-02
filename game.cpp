@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "constants.h"
+#include "perf.h"
 
 Game::Game() {}
 
@@ -25,8 +26,14 @@ bool Game::Run() {
   // DELETE THIS EVENTUALLY
   int goku_location = 0;
 
+  // Create a perf object.
+  Perf perf(true, constants::kFramesPerFpsCheck);
+
   // The game loop.
   while (true) {
+    perf.StartTimer("game_loop");
+    perf.StartTimer("input");
+
     // Clear out old keyup/keydown events.
     input_.BeginNewFrame();
 
@@ -60,16 +67,27 @@ bool Game::Run() {
         input_.IsKeyHeld(SDL_SCANCODE_D)) {
       goku_location += 4;
     }
+    perf.StopTimer("input");
 
-    Sprite sprite("dbz_character_sprites", {.x = 0, .y = 86, .w = 32, .h = 40});
+    perf.StartTimer("create_sprite");
+    Sprite sprite("dbz_character_sprites", {.x = 0, .y = 86, .w = 32, .h = 40},
+                  graphics_.GetRenderer());
     SDL_Rect destination = {.x = goku_location % (constants::kWindowWidth - 64),
                             .y = 30,
                             .w = 64,
                             .h = 80};
-    graphics_.AddSprite(sprite, destination);
+    perf.StopTimer("create_sprite");
 
-    // TODO: Update the frame here.
+    perf.StartTimer("add_sprite");
+    graphics_.AddSprite(sprite, destination, &perf);
+    perf.StopTimer("add_sprite");
+
+    perf.StartTimer("draw");
     graphics_.DrawNextFrame();
+    perf.StopTimer("draw");
+
+    perf.StopTimer("game_loop");
+    perf.ReportResults();
   }
 }
 

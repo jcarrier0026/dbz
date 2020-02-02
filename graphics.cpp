@@ -6,8 +6,6 @@
 
 // Graphics-related constants.
 constexpr char kGameTitle[] = "DBZ";
-// Check the FPS this often.
-constexpr int kFramesPerFpsCheck = 100;
 constexpr float kMsPerSecond = 1000.0;
 
 Graphics::Graphics() : number_of_frames_drawn_(0), last_fps_check_time_ms_(0) {}
@@ -64,23 +62,22 @@ void Graphics::DrawNextFrame() {
 }
 
 void Graphics::CalculateFps() {
-  if (number_of_frames_drawn_ % kFramesPerFpsCheck == 0 &&
+  if (number_of_frames_drawn_ % constants::kFramesPerFpsCheck == 0 &&
       number_of_frames_drawn_ > 0) {
     int current_time = SDL_GetTicks();
     int elapsed_time = current_time - last_fps_check_time_ms_;
-    float fps =
-        static_cast<float>(kFramesPerFpsCheck) / (elapsed_time / kMsPerSecond);
+    float fps = static_cast<float>(constants::kFramesPerFpsCheck) /
+                (elapsed_time / kMsPerSecond);
     std::cout << "FPS: " << fps << std::endl;
     last_fps_check_time_ms_ = SDL_GetTicks();
   }
   number_of_frames_drawn_++;
 }
-void Graphics::AddSprite(const Sprite& sprite, const SDL_Rect& destination) {
-  // Get a texture from the surface.
-  SDL_Texture* texture =
-      SDL_CreateTextureFromSurface(renderer_, sprite.GetSpriteSheet());
-
+void Graphics::AddSprite(const Sprite& sprite, const SDL_Rect& destination,
+                         Perf* perf) {
   // Draw this sprite on the screen.
   SDL_Rect source = sprite.GetSourceLocation();
-  SDL_RenderCopy(renderer_, texture, &source, &destination);
+  perf->StartTimer("render_copy");
+  SDL_RenderCopy(renderer_, sprite.GetSpriteTexture(), &source, &destination);
+  perf->StopTimer("render_copy");
 }
