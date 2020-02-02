@@ -29,14 +29,14 @@ class Graphics {
   // location.
   void AddSprite(const Sprite& sprite, const SDL_Rect& destination);
 
-  // Keeps track of the number of frames drawn to the screen.
-  void IncrementNumberOfFramesDrawn();
-
  private:
+  // Compute the FPS every 100 frames and write it to the screen.
+  void CalculateFps();
+
   SDL_Window* window_;
   SDL_Renderer* renderer_;
   int number_of_frames_drawn_;
-  int last_fps_check_;
+  int last_fps_check_time_ms_;
 };
 
 #endif  // GRAPHICS_H
