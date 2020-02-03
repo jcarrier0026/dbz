@@ -1,6 +1,6 @@
 # Some useful variables
-OBJS = graphics.o input.o main.o sprite.o game.o
-CFLAGS = -Wall -g -O3
+OBJS = graphics.o input.o main.o sprite.o game.o perf.o
+CFLAGS = -Wall -g -std=c++17
 LIBS = `sdl2-config --cflags --libs` -lSDL2_image
 CC = g++
 

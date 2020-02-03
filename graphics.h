@@ -2,6 +2,7 @@
 #define GRAPHICS_H
 #include <SDL2/SDL.h>
 
+#include "perf.h"
 #include "sprite.h"
 
 // Structure to hold the RGB values of the background color.
@@ -27,7 +28,17 @@ class Graphics {
 
   // Add this sprite to the renderer for the next frame at the specified
   // location.
-  void AddSprite(const Sprite& sprite, const SDL_Rect& destination);
+  void AddSprite(const Sprite& sprite, const SDL_Rect& destination,
+                 Perf* perf);
+
+  // This returns a pointer to the renderer struct.
+  // Exposing this is unfortunate but the Sprite needs access to it to create
+  // textures.
+  // This method should be used with caution.
+  // The graphics class still owns the renderer.
+  SDL_Renderer* GetRenderer() {
+    return renderer_;
+  }
 
  private:
   // Compute the FPS every 100 frames and write it to the screen.
