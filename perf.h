@@ -1,8 +1,8 @@
 #ifndef PERF_H
 #define PERF_H
 
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 
 // Perf is a class designed to keep track of performance when performance
 // profiling is desired. It can be enabled or disabled.
@@ -35,6 +35,10 @@ class Perf {
   void ReportResults();
 
  private:
+  // Computes and returns the FPS..
+  float CalculateFps();
+
+  int last_fps_check_time_ms_;
   bool enabled_;
   size_t print_freq_in_frames_;
   // Track the number of times ReportResults is called (once per frame).

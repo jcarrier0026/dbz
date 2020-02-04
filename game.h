@@ -20,8 +20,14 @@ class Game {
   // Returns true if initialization succeeded.
   bool InitSdl();
 
+  // Limits the frame rate.
+  void LimitFrameRate();
+
   // Controls all graphics-related functionality.
   Graphics graphics_;
+
+  // Keeps track of when the current frame started.
+  int frame_start_time_ms;
 
   // Controls all input-related functionality.
   Input input_;
