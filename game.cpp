@@ -3,7 +3,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include <unistd.h>
 #include <iostream>
 
 #include "constants.h"
@@ -93,17 +92,17 @@ bool Game::Run() {
     graphics_.DrawNextFrame();
     perf.StopTimer("draw");
 
-    LimitFrames();
+    LimitFrameRate();
     perf.StopTimer("game_loop");
     perf.ReportResults();
   }
 }
 
-void Game::LimitFrames() {
+void Game::LimitFrameRate() {
   int current_time_ms = SDL_GetTicks();
   int elapsed_time_ms = current_time_ms - frame_start_time_ms;
   if (elapsed_time_ms < constants::kMaxFrameTimeMs) {
-    usleep(1000 * (constants::kMaxFrameTimeMs - elapsed_time_ms));
+    SDL_Delay(constants::kMaxFrameTimeMs - elapsed_time_ms);
   }
 }
 

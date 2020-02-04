@@ -35,8 +35,8 @@ class Perf {
   void ReportResults();
 
  private:
-  // Compute the FPS every 100 frames and write it to the screen.
-  void CalculateFps();
+  // Computes and returns the FPS..
+  float CalculateFps();
 
   int last_fps_check_time_ms_;
   bool enabled_;

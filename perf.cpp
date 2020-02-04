@@ -33,23 +33,18 @@ void Perf::StopTimer(std::string phase_name) {
   }
 }
 
-void Perf::CalculateFps() {
-  float average_fps =
-      kMsPerSecond / (phase_accumulated_time_["game_loop"] /
-                      static_cast<float>(print_freq_in_frames_));
-  std::cout << "FPS: " << average_fps << std::endl;
+float Perf::CalculateFps() {
+  return kMsPerSecond / (phase_accumulated_time_["game_loop"] /
+                         static_cast<float>(print_freq_in_frames_));
 }
 
 void Perf::ReportResults() {
   total_frames_++;
-  if (enabled_ && (total_frames_ % print_freq_in_frames_ == 0) &&
-      total_frames_ != 0) {
-    if (phase_accumulated_time_.find("game_loop") !=
-        phase_accumulated_time_.end()) {
-      CalculateFps();
-    }
+  if (enabled_ && (total_frames_ % print_freq_in_frames_ == 0)) {
     std::cout << "Performance Report After " << print_freq_in_frames_
               << " Frames" << std::endl;
+    std::cout << "Average FPS: " << CalculateFps() << std::endl;
+
     for (const auto& [name, time] : phase_accumulated_time_) {
       float timer_average = static_cast<float>(time) / print_freq_in_frames_;
       std::cout << std::setw(15) << name << ": " << timer_average << "ms"
