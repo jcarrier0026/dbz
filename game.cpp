@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include <unistd.h>
 #include <iostream>
 
 #include "constants.h"
@@ -31,6 +32,7 @@ bool Game::Run() {
 
   // The game loop.
   while (true) {
+    frame_start_time_ms = SDL_GetTicks();
     perf.StartTimer("game_loop");
     perf.StartTimer("input");
 
@@ -67,15 +69,20 @@ bool Game::Run() {
         input_.IsKeyHeld(SDL_SCANCODE_D)) {
       goku_location += 4;
     }
+
+    if (input_.WasKeyPressed(SDL_SCANCODE_A) ||
+        input_.IsKeyHeld(SDL_SCANCODE_A)) {
+      goku_location -= 4;
+    }
     perf.StopTimer("input");
 
     perf.StartTimer("create_sprite");
-    Sprite sprite("dbz_character_sprites", {.x = 0, .y = 86, .w = 32, .h = 40},
+    Sprite sprite("good_guys", {.x = 99, .y = 218, .w = 29, .h = 45},
                   graphics_.GetRenderer());
     SDL_Rect destination = {.x = goku_location % (constants::kWindowWidth - 64),
                             .y = 30,
-                            .w = 64,
-                            .h = 80};
+                            .w = 58,
+                            .h = 90};
     perf.StopTimer("create_sprite");
 
     perf.StartTimer("add_sprite");
@@ -86,8 +93,17 @@ bool Game::Run() {
     graphics_.DrawNextFrame();
     perf.StopTimer("draw");
 
+    LimitFrames();
     perf.StopTimer("game_loop");
     perf.ReportResults();
+  }
+}
+
+void Game::LimitFrames() {
+  int current_time_ms = SDL_GetTicks();
+  int elapsed_time_ms = current_time_ms - frame_start_time_ms;
+  if (elapsed_time_ms < constants::kMaxFrameTimeMs) {
+    usleep(1000 * (constants::kMaxFrameTimeMs - elapsed_time_ms));
   }
 }
 

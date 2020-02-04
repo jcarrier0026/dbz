@@ -15,6 +15,9 @@ class Game {
   // This function does not return because the game loop is inside.
   bool Run();
 
+  // Limits the frame rate.
+  void LimitFrames();
+
  private:
   // Function to initialize the SDL library.
   // Returns true if initialization succeeded.
@@ -22,6 +25,9 @@ class Game {
 
   // Controls all graphics-related functionality.
   Graphics graphics_;
+
+  // Keeps track of when the current frame started.
+  int frame_start_time_ms;
 
   // Controls all input-related functionality.
   Input input_;
