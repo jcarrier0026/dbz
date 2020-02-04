@@ -15,7 +15,7 @@ make
 
 ## Run Instructions
 ```bash
-./a.out
+./dbz.out
 ```
 
 ## Development Tips

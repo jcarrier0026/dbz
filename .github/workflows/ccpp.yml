@@ -4,10 +4,13 @@ on: [push]
 
 jobs:
   build:
-
+    name: Build
     runs-on: ubuntu-latest
-    
     steps:
     - uses: actions/checkout@v2
+    - name: Install libsdl2-dev
+      run: sudo apt-get install libsdl2-dev
+    - name: Instal libsdl2-image-dev
+      run: sudo apt-get install libsdl2-image-dev
     - name: make
       run: make
