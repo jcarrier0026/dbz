@@ -1,4 +1,4 @@
-![](https://github.com/jcarrier0026/dbz/workflows/Build/badge.svg)
+![Build](https://github.com/jcarrier0026/dbz/workflows/Build/badge.svg)
 
 # dbz
 Simple dbz game
