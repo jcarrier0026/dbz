@@ -23,19 +23,23 @@ bool Game::Run() {
   // Event struct to grab input events from SDL.
   SDL_Event event;
 
-  // DELETE THIS EVENTUALLY
-  int goku_location = 50;
-
   // Create a perf object.
   Perf perf(true, constants::kFramesPerFpsCheck);
 
-  SDL_Rect start_destination = {.x = 50, .y = 30, .w = 58, .h = 90};
+  // Create background.
+  Sprite background("Namek Background", {132, 0, 500, 298},
+                    graphics_.GetRenderer());
 
+  // Create an animated sprite object.
+  perf.StartTimer("create_sprite");
   AnimatedSprite sprite("goku_sprite_sheet(in_progress)",
                         {.x = 0, .y = 0, .w = 29, .h = 45},
-                        graphics_.GetRenderer(), 200, start_destination);
+                        graphics_.GetRenderer(), 200, {50, 500, 58, 90});
+  perf.StopTimer("create_sprite");
+
   // The game loop.
   while (true) {
+    graphics_.AddSprite(background, {0, 0, 1000, 596}, &perf);
     frame_start_time_ms = SDL_GetTicks();
     perf.StartTimer("game_loop");
     perf.StartTimer("input");
@@ -72,17 +76,7 @@ bool Game::Run() {
       graphics_.PlayAnimation("Idle", sprite, &perf, false);
     }
 
-    if (input_.WasKeyPressed(SDL_SCANCODE_A) ||
-        input_.IsKeyHeld(SDL_SCANCODE_A)) {
-      goku_location -= 4;
-    }
     perf.StopTimer("input");
-
-    perf.StartTimer("create_sprite");
-    perf.StopTimer("create_sprite");
-
-    perf.StartTimer("add_sprite");
-    perf.StopTimer("add_sprite");
 
     perf.StartTimer("draw");
     graphics_.DrawNextFrame();

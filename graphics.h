@@ -21,8 +21,12 @@ class Graphics {
   // location.
   void AddSprite(const Sprite& sprite, const SDL_Rect& destination, Perf* perf);
 
+  // Adds the current frame in the animation to the renderer. It also adds the
+  // offsets for the destination rectangle.
   void AddSprite(AnimatedSprite& sprite, Perf* perf, std::string animation);
 
+  // Does the logic to figure out what frame of the animation we are on before
+  // calling AddSprite(AnimatedSprite&, Perf*, std::string).
   void PlayAnimation(std::string animation, AnimatedSprite& sprite, Perf* perf,
                      bool once = false);
 

@@ -17,26 +17,38 @@ class AnimatedSprite : public Sprite {
                  SDL_Rect first_sprite_coord_location, SDL_Renderer* renderer,
                  float time_to_update_sprite, SDL_Rect destination);
 
+  // Destructor.
+  virtual ~AnimatedSprite() = default;
   // Checks to see if it is time to move to the next frame in the current
   // animation.
   void TimeToUpdateFrame();
 
-  // Gets destination rectangle.
-  SDL_Rect GetDestinationRect();
-
-  void SetDestinationRect(SDL_Rect new_rect);
-
-  // Sets current_animation.
-  void SetCurrentAnimation(std::string name);
-
   // Gets current_animation.
   std::string GetCurrentAnimation();
+
+  // Gets destination_rect_.
+  SDL_Rect GetDestinationRect();
 
   // Gets frame_index_.
   int GetFrameIndex();
 
+  // Gets offsets.
+  Vector2 GetOffsets(std::string animation);
+
   // Gets source rectangle.
   SDL_Rect GetSourceRect(std::string animation, int frame);
+
+  // Gets visible_.
+  bool GetVisible();
+
+  // Sets current_animation.
+  void SetCurrentAnimation(std::string name);
+
+  // Sets current_animation_once.
+  void SetCurrentAnimationOnce(bool once);
+
+  // Sets the destination_rect_.
+  void SetDestinationRect(SDL_Rect new_rect);
 
   // Sets frame_index_.
   void SetFrameIndex(int frame);
@@ -44,15 +56,11 @@ class AnimatedSprite : public Sprite {
   // Sets elapsed_time_.
   void SetElapsedTime(int time);
 
-  // Sets current_animation_once.
-  void SetCurrentAnimationOnce(bool once);
-
-  // Gets offsets.
-  Vector2 GetOffsets(std::string animation);
+  // Sets the visible_ variable.
+  void SetVisible(bool visible);
 
  protected:
   double time_to_update;
-  int current_frame_start_time;
   bool current_animation_once;
   std::string current_animation;
 
@@ -62,15 +70,6 @@ class AnimatedSprite : public Sprite {
 
   // Clears the animations_ map and the offsets_ map.
   void ResetAnimation();
-
-  // Sets the frame index back to 0 and calls AnimationDone().
-  void StopAnimation();
-
-  // Sets the visible_ variable.
-  void SetVisible(bool visible);
-
-  // Tells the program what to do once an animation is over.
-  virtual void AnimationDone(std::string current_animation);
 
   // Calls the AddAnimation function for all animations.
   virtual void SetupAnimations();
