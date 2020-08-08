@@ -24,11 +24,16 @@ bool Game::Run() {
   SDL_Event event;
 
   // DELETE THIS EVENTUALLY
-  int goku_location = 0;
+  int goku_location = 50;
 
   // Create a perf object.
   Perf perf(true, constants::kFramesPerFpsCheck);
 
+  SDL_Rect start_destination = {.x = 50, .y = 30, .w = 58, .h = 90};
+
+  AnimatedSprite sprite("goku_sprite_sheet(in_progress)",
+                        {.x = 0, .y = 0, .w = 29, .h = 45},
+                        graphics_.GetRenderer(), 200, start_destination);
   // The game loop.
   while (true) {
     frame_start_time_ms = SDL_GetTicks();
@@ -60,13 +65,11 @@ bool Game::Run() {
       return true;
     }
 
-    if (input_.WasKeyPressed(SDL_SCANCODE_B)) {
-      graphics_.ChangeWindowColor();
-    }
-
     if (input_.WasKeyPressed(SDL_SCANCODE_D) ||
         input_.IsKeyHeld(SDL_SCANCODE_D)) {
-      goku_location += 4;
+      graphics_.PlayAnimation("RunRight", sprite, &perf, false);
+    } else {
+      graphics_.PlayAnimation("Idle", sprite, &perf, false);
     }
 
     if (input_.WasKeyPressed(SDL_SCANCODE_A) ||
@@ -76,16 +79,9 @@ bool Game::Run() {
     perf.StopTimer("input");
 
     perf.StartTimer("create_sprite");
-    Sprite sprite("good_guys", {.x = 99, .y = 218, .w = 29, .h = 45},
-                  graphics_.GetRenderer());
-    SDL_Rect destination = {.x = goku_location % (constants::kWindowWidth - 64),
-                            .y = 30,
-                            .w = 58,
-                            .h = 90};
     perf.StopTimer("create_sprite");
 
     perf.StartTimer("add_sprite");
-    graphics_.AddSprite(sprite, destination, &perf);
     perf.StopTimer("add_sprite");
 
     perf.StartTimer("draw");

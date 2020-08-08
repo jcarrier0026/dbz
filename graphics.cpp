@@ -24,27 +24,6 @@ void Graphics::CreateWindow() {
                               0, &window_, &renderer_);
   SDL_SetWindowTitle(window_, kGameTitle);
 
-  // Changes background.
-  SDL_SetRenderDrawColor(renderer_, background_color.red,
-                         background_color.green, background_color.blue,
-                         background_color.alpha);
-
-  // Clear the screen, putting our background color in every pixel.
-  SDL_RenderClear(renderer_);
-
-  // Displays our screen in the window.
-  SDL_RenderPresent(renderer_);
-}
-
-void Graphics::ChangeWindowColor() {
-  background_color.red += 50;
-  background_color.blue += 50;
-
-  // Changes background.
-  SDL_SetRenderDrawColor(renderer_, background_color.red,
-                         background_color.green, background_color.blue,
-                         background_color.alpha);
-
   // Clear the screen, putting our background color in every pixel.
   SDL_RenderClear(renderer_);
 
@@ -66,4 +45,33 @@ void Graphics::AddSprite(const Sprite& sprite, const SDL_Rect& destination,
   perf->StartTimer("render_copy");
   SDL_RenderCopy(renderer_, sprite.GetSpriteTexture(), &source, &destination);
   perf->StopTimer("render_copy");
+}
+
+void Graphics::AddSprite(AnimatedSprite& sprite, Perf* perf,
+                         std::string animation) {
+  // Draw this sprite on the screen.
+  int frame = sprite.GetFrameIndex();
+  SDL_Rect source = sprite.GetSourceRect(animation, frame);
+  SDL_Rect destination = sprite.GetDestinationRect();
+  Vector2 offset = sprite.GetOffsets(animation);
+  destination.x = (destination.x + offset.x) % (constants::kWindowWidth - 64);
+  destination.y += offset.y;
+  sprite.SetDestinationRect(destination);
+  perf->StartTimer("render_copy");
+  SDL_RenderCopy(renderer_, sprite.GetSpriteTexture(), &source, &destination);
+  perf->StopTimer("render_copy");
+}
+
+void Graphics::PlayAnimation(std::string animation, AnimatedSprite& sprite,
+                             Perf* perf, bool once) {
+  sprite.SetCurrentAnimationOnce(once);
+  if (sprite.GetCurrentAnimation() != animation) {
+    std::cout << "starting animation" << std::endl;
+    sprite.SetCurrentAnimation(animation);
+    sprite.SetFrameIndex(0);
+  } else {
+    sprite.SetElapsedTime(SDL_GetTicks());
+    sprite.TimeToUpdateFrame();
+  }
+  this->AddSprite(sprite, perf, animation);
 }
