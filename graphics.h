@@ -23,12 +23,7 @@ class Graphics {
 
   // Adds the current frame in the animation to the renderer. It also adds the
   // offsets for the destination rectangle.
-  void AddSprite(AnimatedSprite& sprite, Perf* perf, std::string animation);
-
-  // Does the logic to figure out what frame of the animation we are on before
-  // calling AddSprite(AnimatedSprite&, Perf*, std::string).
-  void PlayAnimation(std::string animation, AnimatedSprite& sprite, Perf* perf,
-                     bool once = false);
+  void AddSprite(AnimatedSprite& sprite, Perf* perf);
 
   // This returns a pointer to the renderer struct.
   // Exposing this is unfortunate but the Sprite needs access to it to create

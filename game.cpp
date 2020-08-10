@@ -26,20 +26,27 @@ bool Game::Run() {
   // Create a perf object.
   Perf perf(true, constants::kFramesPerFpsCheck);
 
+  // DELETE.
+  SDL_Rect source_rect = {.x = 132, .y = 0, .w = 500, .h = 298};
   // Create background.
-  Sprite background("Namek Background", {132, 0, 500, 298},
-                    graphics_.GetRenderer());
+  Sprite background("Namek Background", source_rect, graphics_.GetRenderer());
 
   // Create an animated sprite object.
+  // DELETE.
+  source_rect = {0, 0, 30, 45};
+  int time_between_frames = 200;
+  SDL_Rect destination_rect = {50, 500, 58, 90};
   perf.StartTimer("create_sprite");
-  AnimatedSprite sprite("goku_sprite_sheet(in_progress)",
-                        {.x = 0, .y = 0, .w = 29, .h = 45},
-                        graphics_.GetRenderer(), 200, {50, 500, 58, 90});
+  bool play_animation_once;
+  AnimatedSprite sprite("goku_sprite_sheet(in_progress)", source_rect,
+                        graphics_.GetRenderer(), time_between_frames,
+                        destination_rect);
   perf.StopTimer("create_sprite");
 
   // The game loop.
   while (true) {
-    graphics_.AddSprite(background, {0, 0, 1000, 596}, &perf);
+    destination_rect = {0, 0, 1000, 596};
+    graphics_.AddSprite(background, destination_rect, &perf);
     frame_start_time_ms = SDL_GetTicks();
     perf.StartTimer("game_loop");
     perf.StartTimer("input");
@@ -68,16 +75,28 @@ bool Game::Run() {
     if (input_.WasKeyPressed(SDL_SCANCODE_ESCAPE)) {
       return true;
     }
-
+    // DELETE.
     if (input_.WasKeyPressed(SDL_SCANCODE_D) ||
         input_.IsKeyHeld(SDL_SCANCODE_D)) {
-      graphics_.PlayAnimation("RunRight", sprite, &perf, false);
-    } else {
-      graphics_.PlayAnimation("Idle", sprite, &perf, false);
+      play_animation_once = false;
+      sprite.PlayAnimation(AnimationType::kRunRight, &perf,
+                           play_animation_once);
+    }
+    // DELETE.
+    else if (input_.WasKeyPressed(SDL_SCANCODE_A) ||
+             input_.IsKeyHeld(SDL_SCANCODE_A)) {
+      play_animation_once = false;
+      sprite.PlayAnimation(AnimationType::kRunLeft, &perf, play_animation_once);
+    }
+    // DELETE.
+    else {
+      play_animation_once = false;
+      sprite.PlayAnimation(AnimationType::kIdle, &perf, play_animation_once);
     }
 
     perf.StopTimer("input");
 
+    graphics_.AddSprite(sprite, &perf);
     perf.StartTimer("draw");
     graphics_.DrawNextFrame();
     perf.StopTimer("draw");

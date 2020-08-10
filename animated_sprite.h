@@ -4,8 +4,9 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <unordered_map>
-#include <vector>
 
+#include "animation.h"
+#include "perf.h"
 #include "sprite.h"
 #include "vector2.h"
 
@@ -19,76 +20,53 @@ class AnimatedSprite : public Sprite {
 
   // Destructor.
   virtual ~AnimatedSprite() = default;
+
   // Checks to see if it is time to move to the next frame in the current
   // animation.
   void TimeToUpdateFrame();
 
-  // Gets current_animation.
-  std::string GetCurrentAnimation();
-
   // Gets destination_rect_.
   SDL_Rect GetDestinationRect();
 
-  // Gets frame_index_.
-  int GetFrameIndex();
-
-  // Gets offsets.
-  Vector2 GetOffsets(std::string animation);
-
-  // Gets source rectangle.
-  SDL_Rect GetSourceRect(std::string animation, int frame);
-
-  // Gets visible_.
-  bool GetVisible();
-
-  // Sets current_animation.
-  void SetCurrentAnimation(std::string name);
-
-  // Sets current_animation_once.
-  void SetCurrentAnimationOnce(bool once);
+  // Gets destination_rect_.
+  SDL_Rect GetCurrentFrameRect();
 
   // Sets the destination_rect_.
   void SetDestinationRect(SDL_Rect new_rect);
 
-  // Sets frame_index_.
-  void SetFrameIndex(int frame);
-
-  // Sets elapsed_time_.
-  void SetElapsedTime(int time);
-
-  // Sets the visible_ variable.
-  void SetVisible(bool visible);
-
- protected:
-  double time_to_update;
-  bool current_animation_once;
-  std::string current_animation;
-
-  // Adds an animations to the map animations_ for this AnimatedSprite.
-  void AddAnimation(std::string name, int frames,
-                    SDL_Rect first_sprite_coord_location, Vector2 offset);
-
-  // Clears the animations_ map and the offsets_ map.
-  void ResetAnimation();
-
-  // Calls the AddAnimation function for all animations.
-  virtual void SetupAnimations();
+  // Updates the current animation and the elapsed time since the
+  // start of the current frame.
+  void PlayAnimation(AnimationType animation, Perf* perf, bool once);
 
  private:
-  // Holds animation name and a vector with all frames for an animation.
-  std::unordered_map<std::string, std::vector<SDL_Rect>> animations_;
-  // Holds the x and y offsets for each animation.
-  std::unordered_map<std::string, Vector2> offsets_;
-  // Tells you what frame of an animation you are on.
+  // Keeps track of what animation is playing.
+  AnimationType current_animation;
+
+  // Keeps track of which frame of the animation is currently on screen.
   int frame_index_;
-  // Tells you if the animation is visible or not.
-  bool visible_;
   // Tells you how much time has passed since the start of a frame.
   int elapsed_time_ = 0;
   // Tells you when the current frame started.
   int last_time_ = 0;
-  // Where the sprite is going on the screen.
+  // Where the sprite is going to be print on the screen.
   SDL_Rect destination_;
+  // Used to setup all animations for the sprite.
+  Animation animation;
+
+  // This is a map of all animations.
+  std::unordered_map<AnimationType, Animation> animations_;
+
+  // Sets elapsed_time_.
+  void SetElapsedTime(int time);
+
+  // Adds an animations to the map animations_ for this AnimatedSprite.
+  void AddAnimation();
+
+  // Clears the animations_ map.
+  void ResetAnimation();
+
+  // Calls the AddAnimation function for all animations.
+  virtual void SetupAnimations();
 };
 
 #endif  // ANIMATEDSPRITE_H
