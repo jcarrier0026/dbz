@@ -7,16 +7,10 @@ enum class AnimationType { kIdle, kRunRight, kRunLeft };
 
 struct Animation {
   AnimationType name;
-  int num_of_frames;
   SDL_Rect source_rect;
-  int time_between_frames;
+  int time_between_frames_ms;
   std::vector<SDL_Rect> image_rects;
-  std::string sprite_sheet_name;
-  bool once;
-  SDL_Renderer *renderer;
   Vector2 offsets;
   int priority;
-
-  Animation &operator=(Animation new_animation);
 };
 

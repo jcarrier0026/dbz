@@ -26,21 +26,17 @@ bool Game::Run() {
   // Create a perf object.
   Perf perf(true, constants::kFramesPerFpsCheck);
 
-  // DELETE.
   SDL_Rect source_rect = {.x = 132, .y = 0, .w = 500, .h = 298};
   // Create background.
   Sprite background("Namek Background", source_rect, graphics_.GetRenderer());
 
   // Create an animated sprite object.
-  // DELETE.
   source_rect = {0, 0, 30, 45};
-  int time_between_frames = 200;
   SDL_Rect destination_rect = {50, 500, 58, 90};
   perf.StartTimer("create_sprite");
   bool play_animation_once;
   AnimatedSprite sprite("goku_sprite_sheet(in_progress)", source_rect,
-                        graphics_.GetRenderer(), time_between_frames,
-                        destination_rect);
+                        graphics_.GetRenderer(), destination_rect);
   perf.StopTimer("create_sprite");
 
   // The game loop.
@@ -75,21 +71,18 @@ bool Game::Run() {
     if (input_.WasKeyPressed(SDL_SCANCODE_ESCAPE)) {
       return true;
     }
-    // DELETE.
+    // TODO: Move to player class.
     if (input_.WasKeyPressed(SDL_SCANCODE_D) ||
         input_.IsKeyHeld(SDL_SCANCODE_D)) {
       play_animation_once = false;
       sprite.PlayAnimation(AnimationType::kRunRight, &perf,
                            play_animation_once);
     }
-    // DELETE.
     if (input_.WasKeyPressed(SDL_SCANCODE_A) ||
         input_.IsKeyHeld(SDL_SCANCODE_A)) {
       play_animation_once = false;
       sprite.PlayAnimation(AnimationType::kRunLeft, &perf, play_animation_once);
-    }
-    // DELETE.
-    else {
+    } else {
       play_animation_once = false;
       sprite.PlayAnimation(AnimationType::kIdle, &perf, play_animation_once);
     }
