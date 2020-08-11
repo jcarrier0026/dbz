@@ -23,15 +23,27 @@ bool Game::Run() {
   // Event struct to grab input events from SDL.
   SDL_Event event;
 
-  // DELETE THIS EVENTUALLY
-  int goku_location = 0;
-
   // Create a perf object.
   Perf perf(true, constants::kFramesPerFpsCheck);
+
+  SDL_Rect source_rect = {.x = 132, .y = 0, .w = 500, .h = 298};
+  // Create background.
+  Sprite background("Namek Background", source_rect, graphics_.GetRenderer());
+
+  // Create an animated sprite object.
+  source_rect = {0, 0, 30, 45};
+  SDL_Rect destination_rect = {50, 500, 58, 90};
+  perf.StartTimer("create_sprite");
+  bool play_animation_once;
+  AnimatedSprite sprite("goku_sprite_sheet(in_progress)", source_rect,
+                        graphics_.GetRenderer(), destination_rect);
+  perf.StopTimer("create_sprite");
 
   // The game loop.
   while (true) {
     frame_start_time_ms = SDL_GetTicks();
+    destination_rect = {0, 0, 1000, 596};
+    graphics_.AddSprite(background, destination_rect, &perf);
     perf.StartTimer("game_loop");
     perf.StartTimer("input");
 
@@ -59,35 +71,25 @@ bool Game::Run() {
     if (input_.WasKeyPressed(SDL_SCANCODE_ESCAPE)) {
       return true;
     }
-
-    if (input_.WasKeyPressed(SDL_SCANCODE_B)) {
-      graphics_.ChangeWindowColor();
-    }
-
+    // TODO: Move to player class.
     if (input_.WasKeyPressed(SDL_SCANCODE_D) ||
         input_.IsKeyHeld(SDL_SCANCODE_D)) {
-      goku_location += 4;
+      play_animation_once = false;
+      sprite.PlayAnimation(AnimationType::kRunRight, &perf,
+                           play_animation_once);
     }
-
     if (input_.WasKeyPressed(SDL_SCANCODE_A) ||
         input_.IsKeyHeld(SDL_SCANCODE_A)) {
-      goku_location -= 4;
+      play_animation_once = false;
+      sprite.PlayAnimation(AnimationType::kRunLeft, &perf, play_animation_once);
+    } else {
+      play_animation_once = false;
+      sprite.PlayAnimation(AnimationType::kIdle, &perf, play_animation_once);
     }
+
     perf.StopTimer("input");
 
-    perf.StartTimer("create_sprite");
-    Sprite sprite("good_guys", {.x = 99, .y = 218, .w = 29, .h = 45},
-                  graphics_.GetRenderer());
-    SDL_Rect destination = {.x = goku_location % (constants::kWindowWidth - 64),
-                            .y = 30,
-                            .w = 58,
-                            .h = 90};
-    perf.StopTimer("create_sprite");
-
-    perf.StartTimer("add_sprite");
-    graphics_.AddSprite(sprite, destination, &perf);
-    perf.StopTimer("add_sprite");
-
+    graphics_.AddSprite(sprite, &perf);
     perf.StartTimer("draw");
     graphics_.DrawNextFrame();
     perf.StopTimer("draw");

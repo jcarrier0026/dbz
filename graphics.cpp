@@ -24,27 +24,6 @@ void Graphics::CreateWindow() {
                               0, &window_, &renderer_);
   SDL_SetWindowTitle(window_, kGameTitle);
 
-  // Changes background.
-  SDL_SetRenderDrawColor(renderer_, background_color.red,
-                         background_color.green, background_color.blue,
-                         background_color.alpha);
-
-  // Clear the screen, putting our background color in every pixel.
-  SDL_RenderClear(renderer_);
-
-  // Displays our screen in the window.
-  SDL_RenderPresent(renderer_);
-}
-
-void Graphics::ChangeWindowColor() {
-  background_color.red += 50;
-  background_color.blue += 50;
-
-  // Changes background.
-  SDL_SetRenderDrawColor(renderer_, background_color.red,
-                         background_color.green, background_color.blue,
-                         background_color.alpha);
-
   // Clear the screen, putting our background color in every pixel.
   SDL_RenderClear(renderer_);
 
@@ -63,6 +42,15 @@ void Graphics::AddSprite(const Sprite& sprite, const SDL_Rect& destination,
                          Perf* perf) {
   // Draw this sprite on the screen.
   SDL_Rect source = sprite.GetSourceLocation();
+  perf->StartTimer("render_copy");
+  SDL_RenderCopy(renderer_, sprite.GetSpriteTexture(), &source, &destination);
+  perf->StopTimer("render_copy");
+}
+
+void Graphics::AddSprite(AnimatedSprite& sprite, Perf* perf) {
+  SDL_Rect source = sprite.GetCurrentFrameRect();
+  SDL_Rect destination = sprite.GetDestinationRect();
+  // Draw this sprite on the screen.
   perf->StartTimer("render_copy");
   SDL_RenderCopy(renderer_, sprite.GetSpriteTexture(), &source, &destination);
   perf->StopTimer("render_copy");

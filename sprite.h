@@ -13,8 +13,10 @@ class Sprite {
   // sheet that the sprite should be pulled from.
   // It also takes a pointer to the renderer in order to make textures.
   // The renderer is not owned by the sprite.
-  Sprite(std::string sprite_sheet_name_, SDL_Rect location,
-        SDL_Renderer* renderer);
+
+  Sprite(std::string sprite_sheet_name, SDL_Rect location,
+         SDL_Renderer* renderer);
+
   virtual ~Sprite() = default;
 
   virtual SDL_Texture* GetSpriteTexture() const {
