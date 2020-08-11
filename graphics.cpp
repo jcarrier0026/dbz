@@ -48,7 +48,6 @@ void Graphics::AddSprite(const Sprite& sprite, const SDL_Rect& destination,
 }
 
 void Graphics::AddSprite(AnimatedSprite& sprite, Perf* perf) {
-  sprite.TimeToUpdateFrame();
   SDL_Rect source = sprite.GetCurrentFrameRect();
   SDL_Rect destination = sprite.GetDestinationRect();
   // Draw this sprite on the screen.

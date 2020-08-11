@@ -23,7 +23,7 @@ class AnimatedSprite : public Sprite {
 
   // Checks to see if it is time to move to the next frame in the current
   // animation.
-  void TimeToUpdateFrame();
+  bool TimeToUpdateFrame();
 
   // Gets destination_rect_.
   SDL_Rect GetDestinationRect();
@@ -64,6 +64,9 @@ class AnimatedSprite : public Sprite {
 
   // Clears the animations_ map.
   void ResetAnimation();
+
+  // Change the current animation.
+  void ChangeAnimation(AnimationType, bool once);
 
   // Calls the AddAnimation function for all animations.
   virtual void SetupAnimations();

@@ -15,6 +15,7 @@ struct Animation {
   bool once;
   SDL_Renderer *renderer;
   Vector2 offsets;
+  int priority;
 
   Animation &operator=(Animation new_animation);
 };

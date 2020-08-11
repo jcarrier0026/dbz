@@ -18,15 +18,13 @@ AnimatedSprite::AnimatedSprite(std::string sprite_sheet_name,
   this->SetupAnimations();
 }
 
-void AnimatedSprite::TimeToUpdateFrame() {
+bool AnimatedSprite::TimeToUpdateFrame() {
+  // Here
+  SetElapsedTime(SDL_GetTicks());
   if (elapsed_time_ >= animations_[current_animation].time_between_frames) {
-    elapsed_time_ = 0;
-    frame_index_ =
-        (frame_index_ + 1) % (int)animations_[current_animation].num_of_frames;
-    if (frame_index_ == 0 && animations_[current_animation].once) {
-      // Logic to stop animation
-    }
+    return true;
   }
+  return false;
 }
 
 SDL_Rect AnimatedSprite::GetDestinationRect() {
@@ -62,16 +60,27 @@ void AnimatedSprite::AddAnimation() {
       std::pair<AnimationType, Animation>(animation.name, animation));
 }
 
+void AnimatedSprite::ChangeAnimation(AnimationType animation, bool once) {
+  animations_[animation].once = once;
+  current_animation = animation;
+  frame_index_ = 0;
+  elapsed_time_ = 0;
+}
+
 void AnimatedSprite::PlayAnimation(AnimationType animation, Perf* perf,
                                    bool once) {
-  SetElapsedTime(SDL_GetTicks());
-  if (current_animation != animation &&
-      frame_index_ == animations_[current_animation].num_of_frames - 1 &&
-      elapsed_time_ >= animations_[current_animation].time_between_frames) {
-    animations_[animation].once = once;
-    current_animation = animation;
-    frame_index_ = 0;
-    elapsed_time_ = 0;
+  if (animations_[animation].priority >
+      animations_[current_animation].priority) {
+    ChangeAnimation(animation, once);
+  } else if (TimeToUpdateFrame()) {
+    if (current_animation != animation &&
+        frame_index_ == animations_[current_animation].num_of_frames - 1) {
+      ChangeAnimation(animation, once);
+    } else {
+      frame_index_ =
+          (frame_index_ + 1) % animations_[current_animation].num_of_frames;
+      elapsed_time_ = 0;
+    }
   }
 }
 
@@ -85,6 +94,7 @@ Animation& Animation::operator=(Animation new_animation) {
   once = new_animation.once;
   renderer = new_animation.renderer;
   offsets = new_animation.offsets;
+  priority = new_animation.priority;
   return *this;
 }
 
@@ -95,6 +105,7 @@ void AnimatedSprite::SetupAnimations() {
   SDL_Rect source_rectangle = {0, 0, 30, 45};
   int time_between_frames = 300;
   int num_of_frames = 2;
+  int priority = 0;
   bool once = false;
 
   animation = {AnimationType::kIdle,
@@ -105,12 +116,14 @@ void AnimatedSprite::SetupAnimations() {
                animation.sprite_sheet_name,
                once,
                animation.renderer,
-               Vector2(0, 0)};
+               Vector2(0, 0),
+               priority};
   AddAnimation();
 
-  source_rectangle = {61, 0, 31, 45};
+  source_rectangle = {60, 0, 32, 45};
   time_between_frames = 100;
   num_of_frames = 2;
+  priority = 1;
   once = false;
 
   animation = {AnimationType::kRunRight,
@@ -121,12 +134,14 @@ void AnimatedSprite::SetupAnimations() {
                animation.sprite_sheet_name,
                once,
                animation.renderer,
-               Vector2(4, 0)};
+               Vector2(4, 0),
+               priority};
   AddAnimation();
 
-  source_rectangle = {61, 46, 31, 45};
+  source_rectangle = {60, 46, 32, 45};
   time_between_frames = 100;
   num_of_frames = 2;
+  priority = 1;
   once = false;
 
   animation = {AnimationType::kRunLeft,
@@ -137,6 +152,7 @@ void AnimatedSprite::SetupAnimations() {
                animation.sprite_sheet_name,
                once,
                animation.renderer,
-               Vector2(-4, 0)};
+               Vector2(-4, 0),
+               priority};
   AddAnimation();
 }

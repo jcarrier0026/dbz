@@ -45,9 +45,9 @@ bool Game::Run() {
 
   // The game loop.
   while (true) {
+    frame_start_time_ms = SDL_GetTicks();
     destination_rect = {0, 0, 1000, 596};
     graphics_.AddSprite(background, destination_rect, &perf);
-    frame_start_time_ms = SDL_GetTicks();
     perf.StartTimer("game_loop");
     perf.StartTimer("input");
 
@@ -83,8 +83,8 @@ bool Game::Run() {
                            play_animation_once);
     }
     // DELETE.
-    else if (input_.WasKeyPressed(SDL_SCANCODE_A) ||
-             input_.IsKeyHeld(SDL_SCANCODE_A)) {
+    if (input_.WasKeyPressed(SDL_SCANCODE_A) ||
+        input_.IsKeyHeld(SDL_SCANCODE_A)) {
       play_animation_once = false;
       sprite.PlayAnimation(AnimationType::kRunLeft, &perf, play_animation_once);
     }
