@@ -5,8 +5,14 @@
 
 #include <iostream>
 
+#include "animation_data.h"
 #include "constants.h"
+#include "location.h"
 #include "perf.h"
+
+using constants::kBackgroundScale;
+using constants::kGokuScale;
+using constants::kGokuSpeed;
 
 Game::Game() {}
 
@@ -26,24 +32,29 @@ bool Game::Run() {
   // Create a perf object.
   Perf perf(true, constants::kFramesPerFpsCheck);
 
-  SDL_Rect source_rect = {.x = 132, .y = 0, .w = 500, .h = 298};
-  // Create background.
-  Sprite background("Namek Background", source_rect, graphics_.GetRenderer());
+  SDL_Rect background_source = {.x = 132, .y = 0, .w = 500, .h = 298};
 
-  // Create an animated sprite object.
-  source_rect = {0, 0, 30, 45};
-  SDL_Rect destination_rect = {50, 500, 58, 90};
+  // Create background.
+  Sprite background("Namek Background", background_source, kBackgroundScale,
+                    graphics_.GetRenderer());
+
   perf.StartTimer("create_sprite");
-  bool play_animation_once;
-  AnimatedSprite sprite("goku_sprite_sheet(in_progress)", source_rect,
-                        graphics_.GetRenderer(), destination_rect);
+
+  AnimatedSprite goku("goku_sprite_sheet(in_progress)", graphics_.GetRenderer(),
+                      kGokuScale, GetGokuAnimations());
   perf.StopTimer("create_sprite");
+
+  Location goku_location(50, 500);
+
+  // If goku is super saiyan.
+  bool super_saiyan = false;
 
   // The game loop.
   while (true) {
     frame_start_time_ms = SDL_GetTicks();
-    destination_rect = {0, 0, 1000, 596};
-    graphics_.AddSprite(background, destination_rect, &perf);
+
+    // Add the background
+    graphics_.AddSprite(background, Location(0, 0), &perf);
     perf.StartTimer("game_loop");
     perf.StartTimer("input");
 
@@ -68,28 +79,59 @@ bool Game::Run() {
           break;
       }
     }
+
     if (input_.WasKeyPressed(SDL_SCANCODE_ESCAPE)) {
       return true;
     }
+
+    // This is the farthest goku can go to the right before hitting the edge.
+    int goku_window_boundary = constants::kWindowWidth - goku.GetWidth();
+
     // TODO: Move to player class.
     if (input_.WasKeyPressed(SDL_SCANCODE_D) ||
         input_.IsKeyHeld(SDL_SCANCODE_D)) {
-      play_animation_once = false;
-      sprite.PlayAnimation(AnimationType::kRunRight, &perf,
-                           play_animation_once);
+      // Move goku to the right by his speed, wrapping at the window edge.
+      goku_location.x += kGokuSpeed;
+
+      // If goku is super saiyan, he moves faster.
+      goku_location.x += super_saiyan ? constants::kSsGokuSpeedMod : 0;
+
+      // Goku flies forever.
+      goku_location.y -= 3;
+
+      if (goku_location.x > goku_window_boundary) {
+        goku_location.x = 0;
+      }
+
+      goku.PlayAnimation(AnimationType::kRunRight);
     }
+
     if (input_.WasKeyPressed(SDL_SCANCODE_A) ||
         input_.IsKeyHeld(SDL_SCANCODE_A)) {
-      play_animation_once = false;
-      sprite.PlayAnimation(AnimationType::kRunLeft, &perf, play_animation_once);
+      goku_location.x -= kGokuSpeed;
+
+      // If goku runs left far enough, let's wrap to the right side.
+      if (goku_location.x < 0) {
+        goku_location.x = goku_window_boundary;
+      }
+
+      goku.PlayAnimation(AnimationType::kRunLeft);
     } else {
-      play_animation_once = false;
-      sprite.PlayAnimation(AnimationType::kIdle, &perf, play_animation_once);
+      goku.PlayAnimation(AnimationType::kDefault);
+    }
+
+    if (input_.WasKeyPressed(SDL_SCANCODE_T) ||
+        input_.IsKeyHeld(SDL_SCANCODE_T)) {
+      super_saiyan = true;
+    }
+    if (input_.WasKeyPressed(SDL_SCANCODE_U) ||
+        input_.IsKeyHeld(SDL_SCANCODE_U)) {
+      super_saiyan = false;
     }
 
     perf.StopTimer("input");
 
-    graphics_.AddSprite(sprite, &perf);
+    graphics_.AddSprite(goku, goku_location, &perf);
     perf.StartTimer("draw");
     graphics_.DrawNextFrame();
     perf.StopTimer("draw");

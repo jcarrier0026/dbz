@@ -2,21 +2,29 @@
 #define ANIMATEDSPRITE_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_rect.h>
+
 #include <string>
 #include <unordered_map>
 
 #include "animation.h"
+#include "location.h"
 #include "perf.h"
 #include "sprite.h"
-#include "vector2.h"
+
+using AnimationMap = std::unordered_map<AnimationType, Animation>;
 
 class AnimatedSprite : public Sprite {
  public:
-  // Constructor takes the name of the sprite sheet, the source rectangle for
-  // the first frame, the renderer, and the time between each frame.
-  AnimatedSprite(std::string sprite_sheet_name,
-                 SDL_Rect first_sprite_coord_location, SDL_Renderer* renderer,
-                 SDL_Rect destination);
+  // Construct an animated sprite.
+  // Params:
+  //   sprite_sheet_name - The name of the sprite sheet.
+  //   renderer          - SDL_renderer to use for this sprite.
+  //   scale             - Ratio of source rectangle area to destination
+  //                       rectangle area.
+  //   animations        - The map of animations possible for this sprite.
+  AnimatedSprite(const std::string& sprite_sheet_name, SDL_Renderer* renderer,
+                 float scale, AnimationMap animations);
 
   // Destructor.
   virtual ~AnimatedSprite() = default;
@@ -25,48 +33,42 @@ class AnimatedSprite : public Sprite {
   // animation.
   bool IsItTimeToMoveToNextFrame();
 
-  // Gets destination_rect_.
-  SDL_Rect GetDestinationRect();
+  // Returns the current source location for the animated sprite.
+  SDL_Rect GetSourceLocation() const override;
 
-  // Gets destination_rect_.
-  SDL_Rect GetCurrentFrameRect();
-
-  // Sets the destination_rect_.
-  void SetDestinationRect(const SDL_Rect& new_rect);
+  // Gets the width of the drawn sprite on the screen.
+  int GetWidth() const {
+    return static_cast<int>(GetSourceLocation().w * scale_);
+  }
 
   // Updates the current animation and the elapsed time since the
   // start of the current frame.
-  void PlayAnimation(AnimationType animation, Perf* perf, bool once);
+  void PlayAnimation(AnimationType animation, bool once = false);
 
  private:
   // Keeps track of what animation is playing.
-  AnimationType current_animation_;
+  AnimationType current_animation_type_ = AnimationType::kDefault;
 
   // Keeps track of which frame of the animation is currently on screen.
-  int frame_index_;
+  int frame_index_ = 0;
+
   // Tells you how much time has passed since the start of a frame.
   int elapsed_time_ms_ = 0;
+
   // Tells you when the current frame started.
   int last_time_ms_ = 0;
-  // Where the sprite is going to be print on the screen.
-  SDL_Rect destination_;
+
   // Tells you if the current animation should only play once.
-  bool animation_once_;
+  bool animation_once_ = false;
 
   // This is a map of all animations.
-  std::unordered_map<AnimationType, Animation> animations_;
+  AnimationMap animations_;
 
   // Sets elapsed_time_.
   void SetElapsedTimeMs(int time_ms);
 
-  // Adds an animations to the map animations_ for this AnimatedSprite.
-  void AddAnimation(Animation animation, int num_of_frames);
-
   // Change the current animation.
   void ChangeAnimation(AnimationType, bool once);
-
-  // Calls the AddAnimation function for all animations.
-  virtual void SetupAnimations();
 };
 
 #endif  // ANIMATEDSPRITE_H

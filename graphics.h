@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 
 #include "animated_sprite.h"
+#include "location.h"
 #include "perf.h"
 #include "sprite.h"
 
@@ -17,13 +18,13 @@ class Graphics {
   // Draw the next frame and clear the renderer.
   void DrawNextFrame();
 
-  // Add this sprite to the renderer for the next frame at the specified
-  // location.
+  // Add this sprite to the renderer for the next frame, scaled to fit the
+  // provided destination rectangle.
   void AddSprite(const Sprite& sprite, const SDL_Rect& destination, Perf* perf);
 
-  // Adds the current frame in the animation to the renderer. It also adds the
-  // offsets for the destination rectangle.
-  void AddSprite(AnimatedSprite& sprite, Perf* perf);
+  // Add a sprite to the renderer at the specified location, scaled by the
+  // sprite scale value.
+  void AddSprite(const Sprite& sprite, Location location, Perf* perf);
 
   // This returns a pointer to the renderer struct.
   // Exposing this is unfortunate but the Sprite needs access to it to create

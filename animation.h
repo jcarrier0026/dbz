@@ -1,16 +1,16 @@
 #include <string>
 #include <vector>
 
-#include "vector2.h"
+#include "location.h"
 
-enum class AnimationType { kIdle, kRunRight, kRunLeft };
+enum class AnimationType { kDefault, kRunRight, kRunLeft };
 
+// A wrapper struct holding all the info we need about an animation.
 struct Animation {
-  AnimationType name;
-  SDL_Rect source_rect;
+  AnimationType type;
   int time_between_frames_ms;
+
+  // Series of images for animation.
   std::vector<SDL_Rect> image_rects;
-  Vector2 offsets;
   int priority;
 };
-
