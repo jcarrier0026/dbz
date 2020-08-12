@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "constants.h"
+#include "location.h"
 
 // Graphics-related constants.
 constexpr char kGameTitle[] = "DBZ";
@@ -47,9 +48,12 @@ void Graphics::AddSprite(const Sprite& sprite, const SDL_Rect& destination,
   perf->StopTimer("render_copy");
 }
 
-void Graphics::AddSprite(AnimatedSprite& sprite, Perf* perf) {
-  SDL_Rect source = sprite.GetCurrentFrameRect();
-  SDL_Rect destination = sprite.GetDestinationRect();
+void Graphics::AddSprite(const Sprite& sprite, Location location, Perf* perf) {
+  SDL_Rect source = sprite.GetSourceLocation();
+  SDL_Rect destination = {.x = location.x,
+                          .y = location.y,
+                          .w = static_cast<int>(source.w * sprite.GetScale()),
+                          .h = static_cast<int>(source.h * sprite.GetScale())};
   // Draw this sprite on the screen.
   perf->StartTimer("render_copy");
   SDL_RenderCopy(renderer_, sprite.GetSpriteTexture(), &source, &destination);

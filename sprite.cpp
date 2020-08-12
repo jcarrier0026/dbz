@@ -7,9 +7,11 @@
 
 constexpr char kAssetPath[] = "assets/";
 
-Sprite::Sprite(std::string sprite_sheet_name, SDL_Rect location,
+Sprite::Sprite(std::string sprite_sheet_name, SDL_Rect location, float scale,
                SDL_Renderer* renderer)
-    : sprite_sheet_name_(sprite_sheet_name), source_location_(location) {
+    : sprite_sheet_name_(sprite_sheet_name),
+      source_location_(location),
+      scale_(scale) {
   // Check if we've already opened this sprite sheet.
   if (Sprite::sprite_textures_.find(sprite_sheet_name) ==
       sprite_textures_.end()) {
