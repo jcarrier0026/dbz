@@ -62,7 +62,7 @@ class AnimatedSprite : public Sprite {
   bool animation_once_ = false;
 
   // This is a map of all animations.
-  AnimationMap animations_;
+  const AnimationMap animations_;
 
   // Sets elapsed_time_.
   void SetElapsedTimeMs(int time_ms);

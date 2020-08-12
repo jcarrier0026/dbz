@@ -5,8 +5,6 @@
 
 #include "constants.h"
 
-namespace {}  // namespace
-
 AnimatedSprite::AnimatedSprite(const std::string& sprite_sheet_name,
                                SDL_Renderer* renderer, float scale,
                                AnimationMap animations)
@@ -16,7 +14,7 @@ AnimatedSprite::AnimatedSprite(const std::string& sprite_sheet_name,
 bool AnimatedSprite::IsItTimeToMoveToNextFrame() {
   SetElapsedTimeMs(SDL_GetTicks());
   if (elapsed_time_ms_ >=
-      animations_[current_animation_type_].time_between_frames_ms) {
+      animations_.at(current_animation_type_).time_between_frames_ms) {
     return true;
   }
   return false;
@@ -41,8 +39,8 @@ void AnimatedSprite::ChangeAnimation(AnimationType animation, bool once) {
 void AnimatedSprite::PlayAnimation(AnimationType animation, bool once) {
   // If the animation trying to be played has a higher priority than the current
   // animation.
-  Animation& current = animations_[current_animation_type_];
-  if (animations_[animation].priority > current.priority) {
+  const Animation& current = animations_.at(current_animation_type_);
+  if (animations_.at(animation).priority > current.priority) {
     ChangeAnimation(animation, once);
   } else if (IsItTimeToMoveToNextFrame()) {
     // If a new animation is trying to play and the current animation has just
