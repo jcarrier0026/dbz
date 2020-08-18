@@ -24,10 +24,6 @@ SDL_Rect AnimatedSprite::GetSourceLocation() const {
   return animations_.at(current_animation_type_).image_rects[frame_index_];
 }
 
-Location AnimatedSprite::GetOffsets() const {
-  return animations_.at(current_animation_type_).offsets[frame_index_];
-}
-
 void AnimatedSprite::SetElapsedTimeMs(int time_ms) {
   elapsed_time_ms_ += time_ms - last_time_ms_;
   last_time_ms_ = time_ms;
