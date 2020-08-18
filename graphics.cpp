@@ -50,10 +50,12 @@ void Graphics::AddSprite(const Sprite& sprite, const SDL_Rect& destination,
 
 void Graphics::AddSprite(const Sprite& sprite, Location location, Perf* perf) {
   SDL_Rect source = sprite.GetSourceLocation();
-  SDL_Rect destination = {.x = location.x,
-                          .y = location.y,
-                          .w = static_cast<int>(source.w * sprite.GetScale()),
-                          .h = static_cast<int>(source.h * sprite.GetScale())};
+  Location offset = sprite.GetOffsets();
+  SDL_Rect destination = {
+      .x = static_cast<int>(location.x + (offset.x * sprite.GetScale())),
+      .y = static_cast<int>(location.y + (offset.y * sprite.GetScale())),
+      .w = static_cast<int>(source.w * sprite.GetScale()),
+      .h = static_cast<int>(source.h * sprite.GetScale())};
   // Draw this sprite on the screen.
   perf->StartTimer("render_copy");
   SDL_RenderCopy(renderer_, sprite.GetSpriteTexture(), &source, &destination);

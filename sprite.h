@@ -5,6 +5,7 @@
 
 #include <string>
 #include <unordered_map>
+#include "location.h"
 
 class Sprite {
  public:
@@ -27,6 +28,8 @@ class Sprite {
 
   // Returns the scale.
   virtual float GetScale() const { return scale_; }
+
+  virtual Location GetOffsets() const { return {0, 0}; };
 
   // Cache the texture once the Graphics class makes it for us.
   virtual void CacheTexture(SDL_Texture* texture) {

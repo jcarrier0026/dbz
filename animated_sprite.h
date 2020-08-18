@@ -36,6 +36,8 @@ class AnimatedSprite : public Sprite {
   // Returns the current source location for the animated sprite.
   SDL_Rect GetSourceLocation() const override;
 
+  Location GetOffsets() const override;
+
   // Gets the width of the drawn sprite on the screen.
   int GetWidth() const {
     return static_cast<int>(GetSourceLocation().w * scale_);
