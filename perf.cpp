@@ -1,5 +1,4 @@
 #include "perf.h"
-#include "constants.h"
 
 #include <SDL2/SDL.h>
 
@@ -7,7 +6,21 @@
 #include <iostream>
 #include <utility>
 
+#include "constants.h"
+
 constexpr float kMsPerSecond = 1000.0;
+
+// Static members must be initialized out-of-line.
+std::unique_ptr<Perf> Perf::instance_ = nullptr;
+
+Perf* Perf::GetPerf() {
+  if (!instance_) {
+    // Calling `new` to access private ctor.
+    instance_ =
+        std::unique_ptr<Perf>(new Perf(true, constants::kFramesPerFpsCheck));
+  }
+  return instance_.get();
+}
 
 void Perf::StartTimer(std::string phase_name) {
   if (enabled_) {

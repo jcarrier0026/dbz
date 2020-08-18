@@ -29,20 +29,17 @@ bool Game::Run() {
   // Event struct to grab input events from SDL.
   SDL_Event event;
 
-  // Create a perf object.
-  Perf perf(true, constants::kFramesPerFpsCheck);
-
   SDL_Rect background_source = {.x = 132, .y = 0, .w = 500, .h = 298};
 
   // Create background.
   Sprite background("Namek Background", background_source, kBackgroundScale,
                     graphics_.GetRenderer());
 
-  perf.StartTimer("create_sprite");
+  Perf::GetPerf()->StartTimer("create_sprite");
 
   AnimatedSprite goku("goku_sprite_sheet(in_progress)", graphics_.GetRenderer(),
                       kGokuScale, GetGokuAnimations());
-  perf.StopTimer("create_sprite");
+  Perf::GetPerf()->StopTimer("create_sprite");
 
   Location goku_location(50, 500);
 
@@ -54,9 +51,9 @@ bool Game::Run() {
     frame_start_time_ms = SDL_GetTicks();
 
     // Add the background
-    graphics_.AddSprite(background, Location(0, 0), &perf);
-    perf.StartTimer("game_loop");
-    perf.StartTimer("input");
+    graphics_.AddSprite(background, Location(0, 0));
+    Perf::GetPerf()->StartTimer("game_loop");
+    Perf::GetPerf()->StartTimer("input");
 
     // Clear out old keyup/keydown events.
     input_.BeginNewFrame();
@@ -129,16 +126,16 @@ bool Game::Run() {
       super_saiyan = false;
     }
 
-    perf.StopTimer("input");
+    Perf::GetPerf()->StopTimer("input");
 
-    graphics_.AddSprite(goku, goku_location, &perf);
-    perf.StartTimer("draw");
+    graphics_.AddSprite(goku, goku_location);
+    Perf::GetPerf()->StartTimer("draw");
     graphics_.DrawNextFrame();
-    perf.StopTimer("draw");
+    Perf::GetPerf()->StopTimer("draw");
 
     LimitFrameRate();
-    perf.StopTimer("game_loop");
-    perf.ReportResults();
+    Perf::GetPerf()->StopTimer("game_loop");
+    Perf::GetPerf()->ReportResults();
   }
 }
 

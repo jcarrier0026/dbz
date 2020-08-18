@@ -9,7 +9,6 @@
 
 #include "animation.h"
 #include "location.h"
-#include "perf.h"
 #include "sprite.h"
 
 using AnimationMap = std::unordered_map<AnimationType, Animation>;
