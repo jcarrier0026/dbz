@@ -4,6 +4,7 @@
 
 #include "constants.h"
 #include "location.h"
+#include "perf.h"
 
 // Graphics-related constants.
 constexpr char kGameTitle[] = "DBZ";
@@ -39,23 +40,22 @@ void Graphics::DrawNextFrame() {
   SDL_RenderClear(renderer_);
 }
 
-void Graphics::AddSprite(const Sprite& sprite, const SDL_Rect& destination,
-                         Perf* perf) {
+void Graphics::AddSprite(const Sprite& sprite, const SDL_Rect& destination) {
   // Draw this sprite on the screen.
   SDL_Rect source = sprite.GetSourceLocation();
-  perf->StartTimer("render_copy");
+  Perf::GetPerf()->StartTimer("render_copy");
   SDL_RenderCopy(renderer_, sprite.GetSpriteTexture(), &source, &destination);
-  perf->StopTimer("render_copy");
+  Perf::GetPerf()->StopTimer("render_copy");
 }
 
-void Graphics::AddSprite(const Sprite& sprite, Location location, Perf* perf) {
+void Graphics::AddSprite(const Sprite& sprite, Location location) {
   SDL_Rect source = sprite.GetSourceLocation();
   SDL_Rect destination = {.x = location.x,
                           .y = location.y,
                           .w = static_cast<int>(source.w * sprite.GetScale()),
                           .h = static_cast<int>(source.h * sprite.GetScale())};
   // Draw this sprite on the screen.
-  perf->StartTimer("render_copy");
+  Perf::GetPerf()->StartTimer("render_copy");
   SDL_RenderCopy(renderer_, sprite.GetSpriteTexture(), &source, &destination);
-  perf->StopTimer("render_copy");
+  Perf::GetPerf()->StopTimer("render_copy");
 }
