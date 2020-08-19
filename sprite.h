@@ -5,6 +5,8 @@
 
 #include <string>
 #include <unordered_map>
+#include "animation_frame.h"
+#include "location.h"
 
 class Sprite {
  public:
@@ -23,7 +25,9 @@ class Sprite {
     return sprite_textures_[sprite_sheet_name_];
   }
 
-  virtual SDL_Rect GetSourceLocation() const { return source_location_; }
+  virtual AnimationFrame GetSourceAnimationFrame() const {
+    return {source_location_, {0, 0}};
+  }
 
   // Returns the scale.
   virtual float GetScale() const { return scale_; }

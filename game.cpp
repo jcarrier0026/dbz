@@ -93,32 +93,37 @@ bool Game::Run() {
       // If goku is super saiyan, he moves faster.
       goku_location.x += super_saiyan ? constants::kSsGokuSpeedMod : 0;
 
-      // Goku flies forever.
-      goku_location.y -= 3;
-
       if (goku_location.x > goku_window_boundary) {
         goku_location.x = 0;
       }
 
-      goku.PlayAnimation(AnimationType::kRunRight);
+      super_saiyan ? goku.PlayAnimation(AnimationType::kSsRunRight)
+                   : goku.PlayAnimation(AnimationType::kRunRight);
     }
 
     if (input_.WasKeyPressed(SDL_SCANCODE_A) ||
         input_.IsKeyHeld(SDL_SCANCODE_A)) {
       goku_location.x -= kGokuSpeed;
 
+      // If goku is super saiyan, he moves faster.
+      goku_location.x -= super_saiyan ? constants::kSsGokuSpeedMod : 0;
+
       // If goku runs left far enough, let's wrap to the right side.
       if (goku_location.x < 0) {
         goku_location.x = goku_window_boundary;
       }
 
-      goku.PlayAnimation(AnimationType::kRunLeft);
+      super_saiyan ? goku.PlayAnimation(AnimationType::kSsRunLeft)
+                   : goku.PlayAnimation(AnimationType::kRunLeft);
     } else {
-      goku.PlayAnimation(AnimationType::kDefault);
+      super_saiyan ? goku.PlayAnimation(AnimationType::kSsIdle)
+                   : goku.PlayAnimation(AnimationType::kDefault);
     }
 
-    if (input_.WasKeyPressed(SDL_SCANCODE_T) ||
-        input_.IsKeyHeld(SDL_SCANCODE_T)) {
+    if ((input_.WasKeyPressed(SDL_SCANCODE_T) ||
+         input_.IsKeyHeld(SDL_SCANCODE_T)) &&
+        !super_saiyan) {
+      goku.PlayAnimation(AnimationType::kSsTransformation);
       super_saiyan = true;
     }
     if (input_.WasKeyPressed(SDL_SCANCODE_U) ||

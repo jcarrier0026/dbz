@@ -42,20 +42,24 @@ void Graphics::DrawNextFrame() {
 
 void Graphics::AddSprite(const Sprite& sprite, const SDL_Rect& destination) {
   // Draw this sprite on the screen.
-  SDL_Rect source = sprite.GetSourceLocation();
+
+  AnimationFrame frame = sprite.GetSourceAnimationFrame();
   Perf::GetPerf()->StartTimer("render_copy");
-  SDL_RenderCopy(renderer_, sprite.GetSpriteTexture(), &source, &destination);
+  SDL_RenderCopy(renderer_, sprite.GetSpriteTexture(), &frame.source,
+                 &destination);
   Perf::GetPerf()->StopTimer("render_copy");
 }
 
 void Graphics::AddSprite(const Sprite& sprite, Location location) {
-  SDL_Rect source = sprite.GetSourceLocation();
-  SDL_Rect destination = {.x = location.x,
-                          .y = location.y,
-                          .w = static_cast<int>(source.w * sprite.GetScale()),
-                          .h = static_cast<int>(source.h * sprite.GetScale())};
+  AnimationFrame frame = sprite.GetSourceAnimationFrame();
+  SDL_Rect destination = {
+      .x = static_cast<int>(location.x + (frame.offset.x * sprite.GetScale())),
+      .y = static_cast<int>(location.y + (frame.offset.y * sprite.GetScale())),
+      .w = static_cast<int>(frame.source.w * sprite.GetScale()),
+      .h = static_cast<int>(frame.source.h * sprite.GetScale())};
   // Draw this sprite on the screen.
   Perf::GetPerf()->StartTimer("render_copy");
-  SDL_RenderCopy(renderer_, sprite.GetSpriteTexture(), &source, &destination);
+  SDL_RenderCopy(renderer_, sprite.GetSpriteTexture(), &frame.source,
+                 &destination);
   Perf::GetPerf()->StopTimer("render_copy");
 }

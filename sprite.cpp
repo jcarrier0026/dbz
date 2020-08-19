@@ -25,7 +25,7 @@ Sprite::Sprite(std::string sprite_sheet_name, SDL_Rect location, float scale,
     }
     // Convert the sprite sheet SDL_Surface to a SDL_Texture for caching.
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    sprite_textures_[sprite_sheet_name] = texture;
+    CacheTexture(texture);
   }
 }
 
