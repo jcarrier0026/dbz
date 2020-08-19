@@ -1,11 +1,14 @@
 #ifndef PERF_H
 #define PERF_H
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 
 // Perf is a class designed to keep track of performance when performance
 // profiling is desired. It can be enabled or disabled.
+//
+// It is a singleton that is not thread-safe.
 //
 // Usage:
 //   For each phase of execution, call StartTimer with a name.
@@ -16,11 +19,9 @@
 //   Start must be called before Stop for a given timer name.
 class Perf {
  public:
-  Perf(bool enabled, int print_freq_in_frames)
-      : enabled_(enabled),
-        print_freq_in_frames_(print_freq_in_frames),
-        total_frames_(0) {}
   virtual ~Perf() = default;
+
+  static Perf* GetPerf();
 
   // Start the timer with the given name.
   void StartTimer(std::string phase_name);
@@ -35,7 +36,16 @@ class Perf {
   void ReportResults();
 
  private:
-  // Computes and returns the FPS..
+  // Ctor is private - this is a singleton.
+  Perf(bool enabled, int print_freq_in_frames)
+      : enabled_(enabled),
+        print_freq_in_frames_(print_freq_in_frames),
+        total_frames_(0) {}
+
+  // The only perf object instance.
+  static std::unique_ptr<Perf> instance_;
+
+  // Computes and returns the FPS.
   float CalculateFps();
 
   int last_fps_check_time_ms_;
