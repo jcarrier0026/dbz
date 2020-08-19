@@ -50,7 +50,7 @@ void Graphics::AddSprite(const Sprite& sprite, const SDL_Rect& destination) {
   Perf::GetPerf()->StopTimer("render_copy");
 }
 
-void Graphics::AddSprite(const Sprite& sprite, Location location, Perf* perf) {
+void Graphics::AddSprite(const Sprite& sprite, Location location) {
   AnimationFrame frame = sprite.GetSourceAnimationFrame();
   SDL_Rect destination = {
       .x = static_cast<int>(location.x + (frame.offset.x * sprite.GetScale())),
@@ -62,5 +62,4 @@ void Graphics::AddSprite(const Sprite& sprite, Location location, Perf* perf) {
   SDL_RenderCopy(renderer_, sprite.GetSpriteTexture(), &frame.source,
                  &destination);
   Perf::GetPerf()->StopTimer("render_copy");
-
 }
