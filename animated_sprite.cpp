@@ -20,12 +20,8 @@ bool AnimatedSprite::IsItTimeToMoveToNextFrame() {
   return false;
 }
 
-SDL_Rect AnimatedSprite::GetSourceLocation() const {
-  return animations_.at(current_animation_type_).image_rects[frame_index_];
-}
-
-Location AnimatedSprite::GetOffsets() const {
-  return animations_.at(current_animation_type_).offsets[frame_index_];
+AnimationFrame AnimatedSprite::GetSourceAnimationFrame() const {
+  return animations_.at(current_animation_type_).animation_frames[frame_index_];
 }
 
 void AnimatedSprite::SetElapsedTimeMs(int time_ms) {
@@ -50,11 +46,11 @@ void AnimatedSprite::PlayAnimation(AnimationType animation, bool once) {
     // If a new animation is trying to play and the current animation has just
     // finished.
     if (current_animation_type_ != animation &&
-        frame_index_ == static_cast<int>(current.image_rects.size()) - 1) {
+        frame_index_ == static_cast<int>(current.animation_frames.size()) - 1) {
       ChangeAnimation(animation, once);
     } else {
-      frame_index_ =
-          (frame_index_ + 1) % static_cast<int>(current.image_rects.size());
+      frame_index_ = (frame_index_ + 1) %
+                     static_cast<int>(current.animation_frames.size());
       elapsed_time_ms_ = 0;
     }
   }

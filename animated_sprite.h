@@ -33,14 +33,12 @@ class AnimatedSprite : public Sprite {
   // animation.
   bool IsItTimeToMoveToNextFrame();
 
-  // Returns the current source location for the animated sprite.
-  SDL_Rect GetSourceLocation() const override;
-
-  Location GetOffsets() const override;
+  // Returns the current frame and offset for the animated sprite.
+  AnimationFrame GetSourceAnimationFrame() const override;
 
   // Gets the width of the drawn sprite on the screen.
   int GetWidth() const {
-    return static_cast<int>(GetSourceLocation().w * scale_);
+    return static_cast<int>(GetSourceAnimationFrame().source.w * scale_);
   }
 
   // Updates the current animation and the elapsed time since the

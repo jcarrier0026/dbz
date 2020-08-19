@@ -100,7 +100,7 @@ bool Game::Run() {
         goku_location.x = 0;
       }
 
-      super_saiyan ? goku.PlayAnimation(AnimationType::kSSRunRight)
+      super_saiyan ? goku.PlayAnimation(AnimationType::kSsRunRight)
                    : goku.PlayAnimation(AnimationType::kRunRight);
     }
 
@@ -116,17 +116,17 @@ bool Game::Run() {
         goku_location.x = goku_window_boundary;
       }
 
-      super_saiyan ? goku.PlayAnimation(AnimationType::kSSRunLeft)
+      super_saiyan ? goku.PlayAnimation(AnimationType::kSsRunLeft)
                    : goku.PlayAnimation(AnimationType::kRunLeft);
     } else {
-      super_saiyan ? goku.PlayAnimation(AnimationType::kSSIdle)
+      super_saiyan ? goku.PlayAnimation(AnimationType::kSsIdle)
                    : goku.PlayAnimation(AnimationType::kDefault);
     }
 
     if ((input_.WasKeyPressed(SDL_SCANCODE_T) ||
          input_.IsKeyHeld(SDL_SCANCODE_T)) &&
         !super_saiyan) {
-      goku.PlayAnimation(AnimationType::kSSTransformation);
+      goku.PlayAnimation(AnimationType::kSsTransformation);
       super_saiyan = true;
     }
     if (input_.WasKeyPressed(SDL_SCANCODE_U) ||
