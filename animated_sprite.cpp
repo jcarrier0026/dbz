@@ -1,6 +1,7 @@
 #include "animated_sprite.h"
 
 #include <iostream>
+#include <unordered_map>
 #include <vector>
 
 #include "constants.h"
